@@ -66,6 +66,8 @@ Thành viên 2, vai **Sản phẩm và kinh doanh**. Câu 1.1, 1.6 (Phiếu A m�
 - Mã lần chạy dùng cho quyết định: v1 `R-base-prepared-20261119-160814-4fa251`; v2 `R-S3-after-20261119-165251-e173dc`, grade `R-S3-grade-20261119-165251-e173dc` (ROI 1.51, chi phí 3.980đ/ticket, không vượt trần).
 - Phiếu A mục A1, A4, A5; Phiếu B mục B3, B7.4, B8; Phiếu C mục C5 câu 3.2, C12.
 
+**Dùng AI:** dùng Claude Code (Claude) để soạn nháp các ô phiếu do mình phụ trách (Phiếu A mục A1, A4, A5; Phiếu B mục B3, B7.4, B8; Phiếu C mục C5 câu 3.2, C12), gợi ý ngưỡng và mục `business` trong config; mình đọc lại, đối chiếu với report và chịu trách nhiệm từng con số.
+
 ### Exit ticket
 
 Học được: ngưỡng phải viết và ký trước khi nhìn số, kèm câu "nếu trượt thì làm gì"; khi số ra xấu, quyết định đúng là quyết định khớp tiêu chí đã ký chứ không phải quyết định đẹp nhất. Còn chưa chắc: ngưỡng chi phí và ROI đặt trên dữ liệu giả (một ngày 22 ticket); với lượng ticket thật ở 2 depot, chưa chắc 7.500đ/ticket còn hợp lý.
@@ -88,6 +90,8 @@ Thành viên 3, vai **Vận hành và pháp lý**. Câu 1.2, 1.4 (Phiếu A mụ
 - `config/operating_gates.json` (bản vòng 1 đã chốt trong `config/operating_gates.round1.json`, hash `032a6476`); lệnh kiểm bài nộp xác nhận "cổng con người đã điền: PIC, người duyệt, kênh báo tin, điều kiện dừng".
 - Mã lần chạy: gói S3 after `R-S3-after-20261119-165251-e173dc` (0 ca ùn, chờ lâu nhất 0 phút, 0 lộ dữ liệu, 0 lỗi oan).
 - Phiếu B mục B4, B5, B6, B7.5, B7.6; Phiếu C mục C3.5, C4, C9, C10, C11.
+
+**Dùng AI:** dùng Claude Code (Claude) để soạn nháp các ô phiếu do mình phụ trách (Phiếu A mục A1, A2 câu 1.2, 1.4; Phiếu B mục B4, B5, B6, B7.5, B7.6; Phiếu C mục C3.5, C4, C9, C10, C11), gợi ý mục `operations` và `legal` trong config; mình đọc lại, đối chiếu với trace và report và chịu trách nhiệm từng con số.
 
 ### Exit ticket
 
