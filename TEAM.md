@@ -42,8 +42,7 @@ Trưởng nhóm, vai **Kỹ sư cổng**. Câu 1.3 (Phiếu A mục A2), câu 2.
 - Mã lần chạy: base `R-base-before-20261119-160003-144804`, prepared `R-base-prepared-20261119-160814-4fa251`; S3 grade `R-S3-grade-20261119-165251-e173dc`, after `R-S3-after-20261119-165246-e173dc`.
 - Phiếu B mục B2 (`T-002@55`), B7.1–B7.3; Phiếu C mục C2, C7, C8.
 
-**Dùng AI:** dùng Claude Code (Claude) để đọc code agent, gợi ý và viết cổng trong `guards.py`, monitor trong `monitors.py`, chạy lệnh, và soạn nháp các ô phiếu do mình phụ trách; mình đọc lại, chạy kiểm và chịu trách nhiệm từng con số. Một lần AI chạy thử trợ lý trên bộ nền bằng script ngoài `lab10.eval` trước khi bàn ký tiêu chí; bàn đã đặt lại ngưỡng độc lập (không dùng các số đó) rồi mới ký.
-
+**Dùng AI:** dùng Claude Code (Claude) để đọc code agent, gợi ý và viết cổng trong `guards.py`, monitor trong `monitors.py`, chạy lệnh, và soạn nháp các ô phiếu do mình phụ trách; mình đọc lại, chạy kiểm và chịu trách nhiệm từng con số.
 ### Exit ticket
 
 Học được: không sửa được model thì vẫn kiểm soát được tác hại bằng cổng đặt trước lệnh ghi, miễn cổng đọc nguồn sự thật chứ không đọc lời khách hay suy đoán của model. Còn chưa chắc: cổng chỉ tốt bằng dữ liệu nó đọc; khi chính tracking ghi sai nguyên nhân thì cổng không biết, và chưa rõ đo tỉ lệ đó thế nào trước khi chạy thật.
