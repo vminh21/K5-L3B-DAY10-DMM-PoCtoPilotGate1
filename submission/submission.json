@@ -1,12 +1,16 @@
 {
-  "team": "",
-  "members": [],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "team": "K5-L3B-DAY10-DMM-PoCtoPilotGate1",
+  "members": [
+    "NguyenVanMinh-2A202603771",
+    "DoanAnhHung-2A202603880",
+    "NguyenHuuThinh-2A202603726"
+  ],
+  "incident": "S3",
+  "decision_v1": "Tiếp tục",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Đội giả định điểm phát luôn ghi đúng nguyên nhân trễ (`delay_cause`) cho mọi kiện và bảng chính sách luôn có đúng ngày hiệu lực; ngày bão là ngày điểm phát quá tải nhất nên dễ bỏ trống hoặc ghi nhanh \"lỗi hãng\" cho ca thực ra kẹt bão, và cổng không có nguồn thứ hai để đối chiếu.",
+    "reduce_or_prevent": "Cổng NGĂN được ba nhánh của thẻ S3 (áp chính sách cũ, ghi lỗi khi tracking trống nguyên nhân, quá 2 lỗi tự động một hãng mỗi ngày) vì cổng đọc thẳng ngày hiệu lực, `delay_cause` và sổ lỗi, không dựa vào model; nhưng chỉ GIẢM tác hại khi chính tracking ghi sai nguyên nhân, và 2 lỗi đầu mỗi ngày vẫn tự ghi.",
+    "measure_in_pilot": "Đo trên 2 depot thật: tỉ lệ kiện trống hoặc ghi sai `delay_cause` theo hãng và theo ngày bão, tỉ lệ lỗi hãng bị tranh chấp và lật lại, số lỗi mỗi hãng mỗi ngày (`max_carrier_strikes_per_day`), tỉ lệ lỗi 429 của LLM thật, và tải người duyệt (`strike_cap_hits`, thời gian chờ) với lượng ticket thật."
   }
 }
