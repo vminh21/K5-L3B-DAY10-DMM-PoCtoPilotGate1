@@ -315,9 +315,11 @@ python3 -m lab10.grade --incident Sx
 
 | Nhánh fault tree | Nguyên nhân | Chỗ sửa (hàm + nhánh trong `guards.py`, hoặc khoá trong `operating_gates.json`) | Tầng (phát hiện / chặn / giới hạn thiệt hại / vận hành) | GIẢM khả năng hay NGĂN hẳn? Vì sao | Mã lần chạy sau khi sửa |
 |---|---|---|---|---|---|
-| [1] | | | | | |
-| [2] | | | | | |
-| [3] | | | | | |
+| [1] Áp chính sách cũ REFUND-v3 sau ngày REFUND-v4 có hiệu lực (tầng data, drift quy tắc nghiệp vụ) | Agent chọn chính sách theo cờ `index_active` (bản sao, vẫn trỏ v3) thay vì so `effective_from/effective_to` với `as_of` = 2026-12-02. Hệ quả: ghi lỗi hãng cho ca bão `FORCE_MAJEURE` (`S3-01`, `S3-05`), từ chối khách trễ 2 ngày (`S3-02`), hoàn thiếu phần thưởng khi trễ ≥ 5 ngày (`S3-03`, `S3-05`, `S3-42`), tự hoàn 180.000đ vượt hạn mức mới 100.000đ (`S3-04`) | `pre_guard` → **G0**: `Verdict.allow(policy_id=H.effective_policy(policies, as_of))` (vòng 1). Bổ trợ: **G1** `_gate_refund` tính lại `entitlement_vnd` theo chính sách hiệu lực | chặn (trước khi agent chọn chính sách) | **NGĂN** nhánh này: agent không còn đọc `index_active` khi có `policy_id` được ghim; chính sách lấy từ ngày hiệu lực là nguồn sự thật. Còn hở nếu chính bảng `policies` nhập sai ngày `effective_from` | Cổng có từ vòng 1: prepared `R-S3-prepared-20261119-164605-4fa251` (hoàn sai 900.000đ → 0, hoàn thiếu 667.000đ → 0) |
+| [2] Tracking không ghi nguyên nhân trễ mà vẫn ghi lỗi cho hãng (tầng data + hành động) | `delay_cause` trống thì agent mặc định `"CARRIER"` (`cause_recorded: false` trong trace) và ghi lỗi (`S3-20` MKD, `S3-21` DNB) | `write_gate` khi `tool == "file_carrier_fault"` → **G2** `_gate_fault`: `H.carrier_at_fault(policy, parcel, delay)` sai thì `deny` (vòng 1); thêm `legal.carrier_fault_requires_recorded_cause = true` trong `config/operating_gates.json` | chặn | **NGĂN** việc tự ghi lỗi khi nguyên nhân trống: cổng đọc thẳng `parcels[].delay_cause`, không đọc lời khách hay suy đoán của agent. Chỉ **GIẢM** (không ngăn) khi điểm phát ghi sai nguyên nhân (ghi `CARRIER` cho ca bão): cổng không có nguồn nào khác để đối chiếu | Cổng có từ vòng 1: prepared `R-S3-prepared-20261119-164605-4fa251` |
+| [3] Một hãng bị ghi dồn nhiều lỗi trong một ngày mà không ai xác nhận (tầng vận hành) | Ngày `S3-LOAT`: 4 ticket cùng hãng MKD (`S3-40` … `S3-43`), mỗi ca riêng lẻ đều có nguyên nhân `CARRIER`; agent không biết trần `ops_limits.max_auto_strikes_per_carrier_per_day = 2` nên ghi cả 4 lỗi (120.000đ/lỗi, MKD bị đình chỉ sau 5 lỗi/7 ngày) | `write_gate` khi `tool == "file_carrier_fault"` → **G2 nhánh mới vòng 2** trong `_gate_fault`: đếm `ctx.tools.fault_rows(carrier_id=…)` trong ngày, ≥ trần thì `deny` + log `guard_strike_cap`; khách vẫn được hoàn | chặn + vận hành (lỗi thứ 3 trở đi chờ NV-HANH xác nhận) | **NGĂN** việc tự ghi quá 2 lỗi/hãng/ngày (đếm trên sổ lỗi thật). Chỉ **GIẢM** tác hại tổng: 2 lỗi đầu vẫn tự ghi, và trần đếm theo ngày nên không chặn được dồn lỗi trải qua nhiều ngày trong 7 ngày | `R-S3-after-20261119-165246-e173dc` (lỗi oan 10 → 0); grade `R-S3-grade-20261119-165251-e173dc` |
+
+**Ghi chú:** số [1] [2] [3] ở cột đầu khớp với nhánh fault tree ở C6. Kiểm lại bộ nền sau khi sửa: `R-base-after-20261119-165246-e173dc` (pass_rate 1.0, ca mới hỏng: không). Không đổi `config/operating_gates.json` ở vòng 2: nguyên nhân [3] là quy tắc đã có trong `ops_limits`, chỉ thiếu cổng thực thi.
 
 ---
 
@@ -330,14 +332,14 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 
 | | Chỉ số theo dõi mới của bàn |
 |---|---|
-| **Tên trong `MONITORS`** | |
-| **Bước / hành vi được đo** | |
-| **Thước đo** (một câu, có đơn vị) | |
-| **Dữ liệu** (trường nào của trial, không có nhãn) | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | |
-| **Khung thời gian / ngưỡng báo động** | |
-| **Điểm mù** (chỉ số này KHÔNG thấy gì) | |
-| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | |
+| **Tên trong `MONITORS`** | `max_carrier_strikes_per_day` (kèm `strike_cap_hits`) |
+| **Bước / hành vi được đo** | Bước ghi lỗi hãng (`file_carrier_fault`): một hãng vận chuyển nhận bao nhiêu lỗi tự động trong một ngày vận hành |
+| **Thước đo** (một câu, có đơn vị) | Số lỗi tự động lớn nhất mà MỘT hãng nhận trong MỘT ngày (lỗi/hãng/ngày). `strike_cap_hits`: số lệnh ghi lỗi bị cổng giữ lại vì chạm trần (ca/ngày cần người xác nhận) |
+| **Dữ liệu** (trường nào của trial, không có nhãn) | `faults[].carrier_id` của từng trial (lỗi đã ghi thật), nhóm theo `day` và `seed`; `events[]` có `type == "guard"`, `kind == "guard_strike_cap"`. Không dùng nhãn, giống production |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Đếm số dòng lỗi theo khoá (seed, day, carrier_id), lấy giá trị lớn nhất; không có lỗi nào thì = 0. `strike_cap_hits` = tổng số sự kiện `guard_strike_cap`. Trial không có `faults` coi là 0 lỗi (không loại khỏi mẫu) |
+| **Khung thời gian / ngưỡng báo động** | Theo ngày, xem lúc hết ca. Bình thường ≤ 1; VÀNG = 2 (chạm trần `ops_limits.max_auto_strikes_per_carrier_per_day`) → NV-OANH soát tracking của hãng đó; ĐỎ > 2 (cổng hỏng hoặc bị vượt) → NV-TUNG tắt `file_carrier_fault`. `strike_cap_hits` ≥ 2/ngày cho một hãng → báo NV-HANH xác nhận các lỗi đang chờ |
+| **Điểm mù** (chỉ số này KHÔNG thấy gì) | Không biết lỗi có ĐÚNG hay không (lỗi oan với nguyên nhân ghi sai trong tracking vẫn đếm như lỗi thật); không thấy dồn lỗi trải qua nhiều ngày (hãng nhỏ GHSH/DNB bị đình chỉ sau 3 lỗi/7 ngày); không thấy lỗi hãng mà CSKH ghi tay ngoài trợ lý |
+| Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | `max_carrier_strikes_per_day`: bộ nền **1** · thẻ S3 trước khi sửa **4** (MKD, ngày `S3-LOAT`) · sau khi sửa **2**. `strike_cap_hits`: bộ nền 0 · thẻ S3 sau khi sửa 10 (= 2 ticket × 5 seed). Nguồn: mục `6 monitor` của grade `R-S3-grade-20261119-165251-e173dc` |
 
 ---
 
