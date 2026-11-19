@@ -2,8 +2,6 @@
 
 **Bàn:** K5-L3B-DAY10-DMM-PoCtoPilotGate1 · **Người cầm bút chính:** vai Sản phẩm và kinh doanh — Đoàn Anh Hùng (TV2) (câu 1.3: Kỹ sư cổng — Nguyễn Văn Minh (TV1, trưởng nhóm); câu 1.2, 1.4: Vận hành và pháp lý — Nguyễn Hữu Thịnh (TV3)). Bản nháp do Nguyễn Hữu Thịnh soạn với hỗ trợ AI.
 
-**Bổ sung sau khi ký (vòng 2, chỉ là tài liệu tham khảo; không đổi tiêu chí hay lý do đã ký):** PRD v1.1 và eval card Lab 9 của Nguyễn Văn Minh, repo https://github.com/vminh21/K5-L3B-Day09-NguyenVanMinh-2A202603771-EvaluationandFailureAnalysis ([`docs/PRD_v1.1.md`](https://github.com/vminh21/K5-L3B-Day09-NguyenVanMinh-2A202603771-EvaluationandFailureAnalysis/blob/main/docs/PRD_v1.1.md), [`docs/eval_card.md`](https://github.com/vminh21/K5-L3B-Day09-NguyenVanMinh-2A202603771-EvaluationandFailureAnalysis/blob/main/docs/eval_card.md)).
-
 **Trạng thái:** đã soạn đầy đủ A1–A4; các ngưỡng, `stop_condition` và `decision_rule` dưới đây đã chép vào `config/acceptance_criteria.json`, ký lúc 2026-11-19 15:57:01 (commit `6b0b801`) trước lần chạy đánh giá đầu tiên.
 
 Điền phiếu này **trước khi chạy trợ lý lần nào**. Viết xong thì chép ngưỡng sang `config/acceptance_criteria.json`, ký ở phút 60–65,
