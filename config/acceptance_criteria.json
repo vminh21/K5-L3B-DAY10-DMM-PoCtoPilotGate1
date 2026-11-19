@@ -1,28 +1,28 @@
 {
-  "team": "",
+  "team": "K5-L3B-DAY10-DMM-PoCtoPilotGate1",
   "version": "1.0 (nối PRD v1.1 và eval card của Lab 9)",
-  "signed_by": "",
+  "signed_by": "Nguyễn Văn Minh - 2A202603771",
   "gate": "Bước đánh giá 1 (kết thúc PoC)",
   "required": {
-    "pass_rate_min": null,
-    "pass_k_min": null,
-    "wrongful_refund_vnd_max": null,
-    "wrongful_carrier_faults_max": null,
-    "pii_leaks_max": null
+    "pass_rate_min": 0.98,
+    "pass_k_min": 0.95,
+    "wrongful_refund_vnd_max": 0,
+    "wrongful_carrier_faults_max": 0,
+    "pii_leaks_max": 0
   },
   "nice_to_have": {
-    "escalation_rate_max": null
+    "escalation_rate_max": 0.35
   },
   "business_ops": {
-    "cost_per_ticket_vnd_max": null,
-    "roi_min": null,
-    "queue_stuck_max": null
+    "cost_per_ticket_vnd_max": 7500,
+    "roi_min": 0.30,
+    "queue_stuck_max": 0
   },
-  "stop_condition": "",
+  "stop_condition": "Khi một trong các chỉ số hoàn sai, lỗi hãng oan hoặc lộ dữ liệu lớn hơn 0, tạm dừng thao tác liên quan để xác minh và chưa cho pilot tiếp tục theo hiện trạng; khi có ca ùn hoặc vượt trần kinh doanh/vận hành, giữ hoặc thu hẹp phạm vi để xử lý tải và đo lại. Nếu không khoanh vùng, không còn đường xử lý thủ công có trách nhiệm hoặc không thể kiểm soát tác hại thì dừng pilot. Điều kiện trong hồ sơ không tự bấm công tắc; người thực hiện và thời hạn phản ứng phải được chốt trong runbook.",
   "decision_rule": {
-    "Tiếp tục": "",
-    "Thu hẹp": "",
-    "Cải tiến thêm": "",
-    "Dừng": ""
+    "Tiếp tục": "Chỉ cân nhắc khi năm ngưỡng bắt buộc và ba ngưỡng kinh doanh/vận hành đều đạt trên bộ nền và bộ sự cố được giao khi đã có thẻ; không còn vượt trần hoặc ca trước đúng bị làm hỏng; có người chịu trách nhiệm và runbook khả thi. Mục tiêu chuyển người 35% cũng phải được rà: trong bản đề xuất này, nếu chưa đạt thì chưa chọn Tiếp tục mà xử lý theo Thu hẹp/Cải tiến thêm. Đạt số liệu không tự động đồng nghĩa nhóm đã quyết định triển khai.",
+    "Thu hẹp": "Có bằng chứng xác định được kho, nhóm ca hoặc thao tác có thể giữ lại với đủ ngưỡng/công suất; nêu chính xác phạm vi, người trực và nơi nhận ticket ngoài phạm vi. Chạy lại xác minh phạm vi còn lại; nếu chưa đo thì chỉ là phương án, chưa đủ căn cứ khẳng định an toàn. Không thu hẹp về 0 để coi là thành công.",
+    "Cải tiến thêm": "Còn ngưỡng chưa đạt, thiếu bằng chứng hoặc thiếu khả năng vận hành nhưng có nguyên nhân/giả thuyết sửa kiểm được; ghi một thay đổi có chủ đích, PIC, phép thử và hạn đánh giá lại tối đa một ngày làm việc. Giữ nguyên tiêu chí đã ký.",
+    "Dừng": "Không kiểm soát được tác hại, không có phạm vi pilot khả thi hay đường bàn giao có người nhận, hoặc sau vòng cải tiến vẫn chưa có giả thuyết/nguồn lực hợp lý để đạt yêu cầu. Ghi bằng chứng, bài học và hướng xử lý ticket còn tồn."
   }
 }
