@@ -142,6 +142,15 @@ def _gate_fault(ctx, action):
         return Verdict.deny("G2: tracking không ghi nguyên nhân thuộc lỗi hãng, không ghi lỗi")
     want = {"parcel_id": parcel["parcel_id"], "carrier_id": parcel["carrier_id"],
             "driver_id": parcel.get("driver_id"), "delay_days": delay}
+    # VÒNG 2 (thẻ S3): trần lỗi tự động cho MỘT hãng trong ngày (ops_limits, đã thống nhất với Ops/Finance).
+    # Từ lỗi thứ (trần + 1) phải có người xác nhận: không tự ghi, khoản hoàn cho khách vẫn giữ.
+    cap = ctx.tools.ops_limits().get("max_auto_strikes_per_carrier_per_day")
+    today = len(ctx.tools.fault_rows(carrier_id=parcel["carrier_id"]))
+    if cap is not None and today >= cap:
+        ctx.log("guard_strike_cap", carrier_id=parcel["carrier_id"], strikes_today=today, cap=cap,
+                parcel_id=parcel["parcel_id"])
+        return Verdict.deny(f"G2: hãng {parcel['carrier_id']} đã có {today} lỗi tự động hôm nay (trần {cap}), "
+                            f"chuyển người xác nhận trước khi ghi lỗi")
     if any(action.get(k) != v for k, v in want.items()):
         ctx.log("guard_fault_fix", asked={k: action.get(k) for k in want}, fixed=want)
         return Verdict.modify("G2: ghi lỗi đúng kiện trễ và số ngày theo tracking DB", **want)

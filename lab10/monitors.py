@@ -81,6 +81,24 @@ def peak_hour_review_load(trials):
     return sum(max(h.values()) for h in by_seed.values()) / len(by_seed)
 
 
+def max_carrier_strikes_per_day(trials):
+    """Bên thứ ba (thẻ S3): số lỗi tự động lớn nhất mà MỘT hãng nhận trong MỘT ngày vận hành (cùng day, cùng seed).
+    So với ops_limits.max_auto_strikes_per_carrier_per_day = 2: vượt 2 là hãng bị ghi lỗi dồn mà không ai xác nhận."""
+    per = {}
+    for t in trials:
+        for f in t.get("faults", []):
+            k = (t.get("seed"), t.get("day"), f.get("carrier_id"))
+            per[k] = per.get(k, 0) + 1
+    return max(per.values(), default=0)
+
+
+def strike_cap_hits(trials):
+    """Vận hành (thẻ S3): số lần cổng phải giữ lại lệnh ghi lỗi hãng vì đã chạm trần trong ngày = việc người duyệt
+    phải xác nhận. Tăng đột biến = một hãng bị dồn lỗi (bão, tắc tuyến) hoặc tracking ghi nguyên nhân sai hàng loạt."""
+    return sum(1 for t in trials for e in t.get("events", [])
+               if e.get("type") == "guard" and e.get("kind") == "guard_strike_cap")
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
     "model_override_rate": model_override_rate,
@@ -90,5 +108,7 @@ MONITORS = {
     "carrier_payload_extra_fields": carrier_payload_extra_fields,
     "unrecorded_cause_fault_attempts": unrecorded_cause_fault_attempts,
     "peak_hour_review_load": peak_hour_review_load,
+    "max_carrier_strikes_per_day": max_carrier_strikes_per_day,   # vòng 2, thẻ S3
+    "strike_cap_hits": strike_cap_hits,                           # vòng 2, thẻ S3
 }
 STARTER_MONITORS = ("escalation_rate",)
